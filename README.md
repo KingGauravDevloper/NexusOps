@@ -10,7 +10,7 @@
 
 An event-driven, multi-tenant facility management platform. NexusSpace acts as an "Operating System" for corporate campuses, allowing employees to manage physical resources, process department chargebacks, and resolve issues via an AI-driven, natural language concierge.
 
-## 🚀 The SDE-2 Engineering Challenges Solved
+## 🚀 The Engineering Challenges Solved
 This project moves beyond standard CRUD operations to tackle complex distributed systems challenges:
 - **Zero-Conflict Scheduling:** Implemented distributed locking via **Redis (Redlock)** to prevent race conditions during high-concurrency booking attempts (e.g., millisecond-level double-booking prevention).
 - **Distributed Data Consistency:** Designed a **Saga Pattern** using **Apache Kafka** to orchestrate transactions across disparate databases. Guarantees rollback of PostgreSQL reservations if external payment gateways (Stripe) fail.
