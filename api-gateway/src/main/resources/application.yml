@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: booking-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/bookings/**, /api/resources/**
+        - id: billing-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/billing/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://nexusops.auth0.com/

@@ -22,11 +22,13 @@ public class BookingService {
     private final ReservationRepository reservationRepository;
     private final ResourceRepository resourceRepository;
     private final RedissonClient redissonClient;
+    private final com.nexusops.booking.kafka.BookingEventPublisher eventPublisher;
 
-    public BookingService(ReservationRepository reservationRepository, ResourceRepository resourceRepository, RedissonClient redissonClient) {
+    public BookingService(ReservationRepository reservationRepository, ResourceRepository resourceRepository, RedissonClient redissonClient, com.nexusops.booking.kafka.BookingEventPublisher eventPublisher) {
         this.reservationRepository = reservationRepository;
         this.resourceRepository = resourceRepository;
         this.redissonClient = redissonClient;
+        this.eventPublisher = eventPublisher;
     }
 
     public List<Reservation> getAllReservations() {
@@ -56,9 +58,9 @@ public class BookingService {
             reservation.setEndTime(end);
             reservation.setStatus(ReservationStatus.PENDING); // Saga pattern will update this later
 
-            // TODO: Fire Kafka event `booking.created` to Billing Service (Phase 4)
-
-            return reservationRepository.save(reservation);
+            Reservation saved = reservationRepository.save(reservation);
+            eventPublisher.publishBookingCreated(saved.getId(), userEmail);
+            return saved;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Booking process was interrupted.");
