@@ -1,12 +1,4 @@
-Here is a professional, SDE-2 level `README.md` tailored specifically for GitHub. 
 
-I have structured this exactly how hiring managers and senior engineers want to see it: starting with the architecture, explicitly stating the hard problems you solved, and providing a clean diagram. 
-
-Copy everything inside the code block below and save it as `README.md` in your repository.
-
-***
-
-```markdown
 # 🏢 NexusSpace: Intelligent Enterprise Workspace Manager
 
 ![Java](https://img.shields.io/badge/Java-17%2B-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
@@ -111,6 +103,3 @@ All endpoints require a digitally signed `HttpOnly` JWT. The system enforces 4 s
 - `GUEST_TENANT`
 
 *Attempting to execute an MCP tool without the correct JWT authority will result in a hard 403 Forbidden at the Gateway level.*
-```
-
-***
