@@ -4,21 +4,29 @@ import com.nexusops.booking.entity.Reservation;
 import com.nexusops.booking.entity.ReservationStatus;
 import com.nexusops.booking.repository.ReservationRepository;
 import com.nexusops.booking.repository.ResourceRepository;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class BookingService {
     private final ReservationRepository reservationRepository;
     private final ResourceRepository resourceRepository;
+    private final RedissonClient redissonClient;
 
-    public BookingService(ReservationRepository reservationRepository, ResourceRepository resourceRepository) {
+    public BookingService(ReservationRepository reservationRepository, ResourceRepository resourceRepository, RedissonClient redissonClient) {
         this.reservationRepository = reservationRepository;
         this.resourceRepository = resourceRepository;
+        this.redissonClient = redissonClient;
     }
 
     public List<Reservation> getAllReservations() {
@@ -27,19 +35,38 @@ public class BookingService {
 
     @Transactional
     public Reservation createReservation(UUID resourceId, String userEmail, LocalDateTime start, LocalDateTime end) {
-        var resource = resourceRepository.findById(resourceId)
-                .orElseThrow(() -> new IllegalArgumentException("Resource not found"));
+        // Redlock Phase 3 logic
+        RLock lock = redissonClient.getLock("booking_lock_" + resourceId.toString());
+        boolean acquired = false;
+        
+        try {
+            // Wait up to 3s to acquire lock, hold for 10s automatically
+            acquired = lock.tryLock(3, 10, TimeUnit.SECONDS);
+            if (!acquired) {
+                throw new IllegalStateException("System is currently busy. Please try again later.");
+            }
 
-        Reservation reservation = new Reservation();
-        reservation.setResource(resource);
-        reservation.setUserEmail(userEmail);
-        reservation.setStartTime(start);
-        reservation.setEndTime(end);
-        reservation.setStatus(ReservationStatus.PENDING); // Saga pattern will update this later
+            var resource = resourceRepository.findById(resourceId)
+                    .orElseThrow(() -> new IllegalArgumentException("Resource not found"));
 
-        // TODO: Redis Redlock logic to prevent double-booking (Phase 3)
-        // TODO: Fire Kafka event `booking.created` to Billing Service (Phase 4)
+            Reservation reservation = new Reservation();
+            reservation.setResource(resource);
+            reservation.setUserEmail(userEmail);
+            reservation.setStartTime(start);
+            reservation.setEndTime(end);
+            reservation.setStatus(ReservationStatus.PENDING); // Saga pattern will update this later
 
-        return reservationRepository.save(reservation);
+            // TODO: Fire Kafka event `booking.created` to Billing Service (Phase 4)
+
+            return reservationRepository.save(reservation);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Booking process was interrupted.");
+        } finally {
+            // Ensure lock is released even if exceptions occur
+            if (acquired && lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
+        }
     }
 }
