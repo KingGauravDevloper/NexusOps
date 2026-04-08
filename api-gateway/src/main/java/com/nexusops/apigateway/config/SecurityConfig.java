@@ -15,7 +15,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-    private final String jwtSecret = "NEXUSOPS_SUPER_SECRET_KEY_12345678901234567890123456789012";
+    private final String jwtSecret = "NEXUSOPS_SUPER_SECRET_KEY_123456";
 
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {

@@ -1,0 +1,6 @@
+C:\Pro\auth-service\src\main\java\com\nexusops\auth\config\SecurityConfig.java
+C:\Pro\auth-service\src\main\java\com\nexusops\auth\security\JwtProvider.java
+C:\Pro\auth-service\src\main\java\com\nexusops\auth\AuthServiceApplication.java
+C:\Pro\auth-service\src\main\java\com\nexusops\auth\controller\AuthController.java
+C:\Pro\auth-service\src\main\java\com\nexusops\auth\entity\UserAccount.java
+C:\Pro\auth-service\src\main\java\com\nexusops\auth\repository\UserRepository.java
