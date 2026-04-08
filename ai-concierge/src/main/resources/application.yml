@@ -5,10 +5,10 @@ spring:
   application:
     name: ai-concierge
   ai:
-    vertexai:
-      gemini:
-        project-id: ${GOOGLE_CLOUD_PROJECT_ID:nexusops-demo}
-        location: ${GOOGLE_CLOUD_LOCATION:us-central1}
-        chat:
-          options:
-            model: gemini-pro
+    openai:
+      api-key: "AIzaSyAw_Fg-ZYAkpHoPtTZgfx6IZ_V8MBeUfjk"
+      base-url: "https://generativelanguage.googleapis.com/v1beta/openai/"
+      chat:
+        options:
+          model: gemini-1.5-flash
+          temperature: 0.7

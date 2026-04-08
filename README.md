@@ -12,6 +12,12 @@ An event-driven, multi-tenant facility management platform. NexusSpace acts as a
 
 ## 🚀 The Engineering Challenges Solved
 This project moves beyond standard CRUD operations to tackle complex distributed systems challenges:
+*   **Phase 2**: Booking Engine Scaffold & Database Connectivity (PostgreSQL).
+*   **Phase 3**: Zero-Conflict Rescheduling via Redis (Redisson Distributed Locking).
+*   **Phase 4**: Event-Driven Integration (Kafka Producer/Consumer pairs for Billing execution).
+*   **Phase 5**: Web Services & Identity (API Gateway + Spring Security RBAC).
+*   **Phase 6**: AI Concierge (Natural Language Room Booking using Spring AI & Gemini).
+*   **Phase 7**: Native Authentication Service (HMAC JSON Web Tokens + BCrypt DB).
 - **Zero-Conflict Scheduling:** Implemented distributed locking via **Redis (Redlock)** to prevent race conditions during high-concurrency booking attempts (e.g., millisecond-level double-booking prevention).
 - **Distributed Data Consistency:** Designed a **Saga Pattern** using **Apache Kafka** to orchestrate transactions across disparate databases. Guarantees rollback of PostgreSQL reservations if external payment gateways (Stripe) fail.
 - **Secure AI Orchestration:** Integrated an LLM via **Model Context Protocol (MCP)** and **RAG**, passing stateless JWT contexts to ensure the AI agent respects strict internal RBAC (Role-Based Access Control) when mutating system states.
@@ -72,9 +78,11 @@ When a user asks the AI to book a paid premium resource, the system executes the
 To test the resilience of the architecture locally, the entire infrastructure is containerized.
 
 ### Prerequisites
-- Docker & Docker Compose
-- Java 17+
-- Stripe API Key (for Billing Service)
+- Docker & Docker
+*   **Back_End**: Java 17, Spring Boot 3, Spring WebFlux, Spring Data JPA, Spring AI.
+*   **Infrastructure**: PostgreSQL, Redis, Kafka, Docker.
+*   **Security**: Spring Security OAuth2 Resource Server, Native JJWT HMAC Signatures.
+*   **AI Integration**: Spring AI (Gemini Compatibility), Model Context Protocol.
 
 ### Spin up the Infrastructure
 Bring up Kafka, Zookeeper, PostgreSQL, and Redis in the background:

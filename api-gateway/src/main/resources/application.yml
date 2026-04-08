@@ -19,8 +19,7 @@ spring:
           uri: http://localhost:8083
           predicates:
             - Path=/api/chat/**
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://nexusops.auth0.com/
+        - id: auth-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/auth/**

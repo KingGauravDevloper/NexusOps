@@ -28,11 +28,7 @@ spring:
       port: 6379
 
   # Authentication Configuration
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://nexusops.auth0.com/
+  # We use local symmetric decoding via bean configuration
 
   # Kafka Configuration
   kafka:
